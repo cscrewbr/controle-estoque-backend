@@ -20,18 +20,20 @@ async function getSheetsClient() {
 }
 
 app.post("/entrada", async (req, res) => {
-  try {
-    const sheets = await getSheetsClient();
-    const valores = [
-      [
-        req.body.produto,
-        req.body.quantidade,
-        req.body.valor,
-        req.body.fornecedor,
-        req.body.data,
-        req.body.observacao,
-      ],
-    ];
+  const { produto, quantidade, valor, fornecedor, data, observacao } = req.body;
+
+  const response = await sheets.spreadsheets.values.append({
+    spreadsheetId: "11V2k5txES6TyP-fw5yCVjrbxySCmkV86g5cQmT7jQEc",
+    range: "Entrada!A1",
+    valueInputOption: "USER_ENTERED",
+    requestBody: {
+      values: [[produto, quantidade, valor, fornecedor, data, observacao]],
+    },
+  });
+
+  res.send({ success: true, response });
+});
+
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
