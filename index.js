@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { google } = require("googleapis");
-const credentials = require("./credenciais.json");
+const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
 
 const app = express();
 app.use(cors());
