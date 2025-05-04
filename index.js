@@ -20,19 +20,33 @@ async function getSheetsClient() {
 }
 
 app.post("/entrada", async (req, res) => {
-  const { produto, quantidade, valor, fornecedor, data, observacao } = req.body;
+  try {
+    const sheets = google.sheets({ version: "v4", auth });
+    const values = [
+      [
+        req.body.produto,
+        req.body.quantidade,
+        req.body.valor,
+        req.body.fornecedor,
+        req.body.data,
+        req.body.observacao,
+      ],
+    ];
 
-  const response = await sheets.spreadsheets.values.append({
-    spreadsheetId: "11V2k5txES6TyP-fw5yCVjrbxySCmkV86g5cQmT7jQEc",
-    range: "Entrada!A1",
-    valueInputOption: "USER_ENTERED",
-    requestBody: {
-      values: [[produto, quantidade, valor, fornecedor, data, observacao]],
-    },
-  });
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: planilhaID,
+      range: "Entrada!A1",
+      valueInputOption: "USER_ENTERED",
+      resource: { values },
+    });
 
-  res.send({ success: true, response });
+    res.status(200).send("Entrada registrada");
+  } catch (error) {
+    console.error("Erro ao registrar entrada:", error);
+    res.status(500).send("Erro ao registrar entrada");
+  }
 });
+
 
 
     await sheets.spreadsheets.values.append({
